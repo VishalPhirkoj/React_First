@@ -12,6 +12,7 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
+import Customer from "./Customer";
 
 import {
   FormControl,
@@ -55,7 +56,12 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   textBox: {
-    margin: theme.spacing(1),
+    margin: "14px",
+    marginTop: theme.spacing(2),
+  },
+  stepperWidth: {
+    maxWidth: "70%",
+    margin: "auto",
   },
 }));
 
@@ -68,35 +74,40 @@ function getSteps() {
 }
 
 function getStepContent(stepIndex) {
-  // const classes = useStyles();
   switch (stepIndex) {
     case 0:
       return (
         <>
-          <Grid container justify="center" alignItems="center">
-            <form noValidate autoComplete="off">
-              <TextField
-                id="outlined-basic"
-                label="First Name"
-                variant="outlined"
-                spacing={1}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Middel Name"
-                variant="outlined"
-              />
-              <TextField
-                id="outlined-basic"
-                label="Last Name"
-                variant="outlined"
-              />
-            </form>
+          <Grid container justify="center">
+            <TextField
+              id="outlined-basic"
+              label="First Name"
+              variant="outlined"
+              style={{ margin: "16px" }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Middel Name"
+              variant="outlined"
+              style={{ margin: "16px" }}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Last Name"
+              variant="outlined"
+              style={{ margin: "16px" }}
+            />
           </Grid>
         </>
       );
     case 1:
-      return "What is an ad group anyways?";
+      return (
+        <>
+          <Grid container justify="center">
+            <Customer />
+          </Grid>
+        </>
+      );
     case 2:
       return "This is the bit I really care about!";
     default:
@@ -136,13 +147,6 @@ export default function FormsPage() {
       <PageTitle title="I N D I A N" />
       <Grid container spacing={4}>
         <Grid item md={12}>
-          {/* <FormControl>
-            <InputLabel htmlFor="my-input">Email address</InputLabel>
-            <Input id="my-input" aria-describedby="my-helper-text" />
-            <FormHelperText id="my-helper-text">
-              We'll never share your email.
-            </FormHelperText>
-          </FormControl> */}
           <Widget title="Headings" disableWidgetMenu>
             <div className={classes.dashedBorder}>
               <TableContainer component={Paper}>
@@ -174,51 +178,51 @@ export default function FormsPage() {
             </div>
           </Widget>
         </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Widget title="Testing" disableWidgetMenu>
-          <div className={classes.root}>
-            <Stepper activeStep={activeStep} alternativeLabel>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-            <div>
-              {activeStep === steps.length ? (
-                <div>
-                  <Typography className={classes.instructions}>
-                    All steps completed
-                  </Typography>
-                  <Button onClick={handleReset}>Reset</Button>
-                </div>
-              ) : (
-                <div>
-                  <Typography className={classes.instructions}>
-                    {getStepContent(activeStep)}
-                  </Typography>
+        <Grid item xs={12} className={classes.stepperWidth}>
+          <Widget title="Testing" disableWidgetMenu>
+            <div className={classes.root}>
+              <Stepper activeStep={activeStep} alternativeLabel>
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel>{label}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+              <div>
+                {activeStep === steps.length ? (
                   <div>
-                    <Button
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      className={classes.backButton}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                    >
-                      {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                    </Button>
+                    <Typography className={classes.instructions}>
+                      All steps completed
+                    </Typography>
+                    <Button onClick={handleReset}>Reset</Button>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div>
+                    <Typography className={classes.instructions}>
+                      {getStepContent(activeStep)}
+                    </Typography>
+                    <div>
+                      <Button
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        className={classes.backButton}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNext}
+                      >
+                        {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </Widget>
+          </Widget>
+        </Grid>
       </Grid>
     </>
   );

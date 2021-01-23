@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { Close as CloseIcon } from "@material-ui/icons";
+import { ToastContainer, toast } from "react-toastify";
+
 import {
   Grid,
   CircularProgress,
@@ -10,6 +13,7 @@ import {
   Fade,
 } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
+import Notification from "../../components/Notification";
 import classnames from "classnames";
 
 // styles
@@ -20,10 +24,15 @@ import logo from "./logo.svg";
 import google from "../../images/google.svg";
 
 // context
-import { useUserDispatch, loginUser } from "../../context/UserContext";
+import {
+  useUserDispatch,
+  loginUser,
+  registerUser,
+} from "../../context/UserContext";
 
 function Login(props) {
   var classes = useStyles();
+  var [errorToastId, setErrorToastId] = useState(null);
 
   // global
   var userDispatch = useUserDispatch();
@@ -33,14 +42,117 @@ function Login(props) {
   var [error, setError] = useState(null);
   var [activeTabId, setActiveTabId] = useState(0);
   var [nameValue, setNameValue] = useState("");
-  var [loginValue, setLoginValue] = useState("admin@flatlogic.com");
+  var [mobileValue, setMobileValue] = useState("");
+  var [loginValue, setLoginValue] = useState("admin@arphaenterprises.com");
   var [passwordValue, setPasswordValue] = useState("password");
+  var [confirmpasswordValue, setConfirmPasswordValue] = useState("password");
+
+  // function handleNotificationCall(notificationType) {
+  //   var componentProps;
+
+  //   switch (notificationType) {
+  //     case "info":
+  //       componentProps = {
+  //         type: "feedback",
+  //         message: "New user feedback received",
+  //         variant: "contained",
+  //         color: "primary",
+  //       };
+  //       break;
+  //     case "error":
+  //       componentProps = {
+  //         type: "message",
+  //         message: "Message was not sent!",
+  //         variant: "contained",
+  //         color: "secondary",
+  //         extraButton: "Resend",
+  //       };
+  //       break;
+  //     default:
+  //       componentProps = {
+  //         type: "shipped",
+  //         message: "The item was shipped",
+  //         variant: "contained",
+  //         color: "success",
+  //       };
+  //   }
+  // }
+  function retryErrorNotification() {
+    var componentProps = {
+      type: "message",
+      message: "Message was sent successfully!",
+      variant: "contained",
+      color: "success",
+    };
+    toast.update(errorToastId, {
+      render: <Notification {...componentProps} />,
+      type: "success",
+    });
+    setErrorToastId(null);
+  }
+  function CloseButton({ closeToast, className }) {
+    return <CloseIcon className={className} onClick={closeToast} />;
+  }
+  function sendNotification(componentProps, options) {
+    return toast(
+      <Notification
+        {...componentProps}
+        className={classes.notificationComponent}
+      />,
+      options,
+    );
+  }
+  function handleNotificationCall(notificationType) {
+    var componentProps;
+
+    if (errorToastId && notificationType === "error") return;
+
+    switch (notificationType) {
+      case "info":
+        componentProps = {
+          type: "feedback",
+          message: "New user feedback received",
+          variant: "contained",
+          color: "primary",
+        };
+        break;
+      case "error":
+        componentProps = {
+          type: "message",
+          message: "Message was not sent!",
+          variant: "contained",
+          color: "secondary",
+          extraButton: "Resend",
+          extraButtonClick: retryErrorNotification,
+        };
+        break;
+      default:
+        componentProps = {
+          type: "shipped",
+          message: "The Registration is Completed",
+          variant: "contained",
+          color: "success",
+        };
+    }
+
+    var toastId = sendNotification(componentProps, {
+      type: notificationType,
+      position: toast.POSITION.BOTTOM_RIGHT,
+      progressClassName: classes.progress,
+      onClose: notificationType === "error" && (() => setErrorToastId(null)),
+      className: classes.notification,
+    });
+
+    if (notificationType === "error") setErrorToastId(toastId);
+  }
 
   return (
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
         <img src={logo} alt="logo" className={classes.logotypeImage} />
-        <Typography className={classes.logotypeText}>Material Admin</Typography>
+        <Typography className={classes.logotypeText}>
+          STARK Enterprises
+        </Typography>
       </div>
       <div className={classes.formContainer}>
         <div className={classes.form}>
@@ -57,17 +169,16 @@ function Login(props) {
           {activeTabId === 0 && (
             <React.Fragment>
               <Typography variant="h1" className={classes.greeting}>
-                Good Morning, User
+                Welcome!
               </Typography>
-              <Button size="large" className={classes.googleButton}>
-                <img src={google} alt="google" className={classes.googleIcon} />
-                &nbsp;Sign in with Google
-              </Button>
-              <div className={classes.formDividerContainer}>
+              <Typography variant="h2" className={classes.subGreeting}>
+                Login your account
+              </Typography>
+              {/* <div className={classes.formDividerContainer}>
                 <div className={classes.formDivider} />
                 <Typography className={classes.formDividerWord}>or</Typography>
                 <div className={classes.formDivider} />
-              </div>
+              </div> */}
               <Fade in={error}>
                 <Typography color="secondary" className={classes.errorMessage}>
                   Something is wrong with your login or password :(
@@ -82,7 +193,7 @@ function Login(props) {
                   },
                 }}
                 value={loginValue}
-                onChange={e => setLoginValue(e.target.value)}
+                onChange={(e) => setLoginValue(e.target.value)}
                 margin="normal"
                 placeholder="Email Adress"
                 type="email"
@@ -97,9 +208,9 @@ function Login(props) {
                   },
                 }}
                 value={passwordValue}
-                onChange={e => setPasswordValue(e.target.value)}
+                onChange={(e) => setPasswordValue(e.target.value)}
                 margin="normal"
-                placeholder="Password"
+                placeholder="Enter Password"
                 type="password"
                 fullWidth
               />
@@ -160,9 +271,24 @@ function Login(props) {
                   },
                 }}
                 value={nameValue}
-                onChange={e => setNameValue(e.target.value)}
+                onChange={(e) => setNameValue(e.target.value)}
                 margin="normal"
                 placeholder="Full Name"
+                type="text"
+                fullWidth
+              />
+              <TextField
+                id="Mobile"
+                InputProps={{
+                  classes: {
+                    underline: classes.textFieldUnderline,
+                    input: classes.textField,
+                  },
+                }}
+                value={mobileValue}
+                onChange={(e) => setMobileValue(e.target.value)}
+                margin="normal"
+                placeholder="Mobile Number"
                 type="text"
                 fullWidth
               />
@@ -174,8 +300,7 @@ function Login(props) {
                     input: classes.textField,
                   },
                 }}
-                value={loginValue}
-                onChange={e => setLoginValue(e.target.value)}
+                onChange={(e) => setLoginValue(e.target.value)}
                 margin="normal"
                 placeholder="Email Adress"
                 type="email"
@@ -189,10 +314,23 @@ function Login(props) {
                     input: classes.textField,
                   },
                 }}
-                value={passwordValue}
-                onChange={e => setPasswordValue(e.target.value)}
+                onChange={(e) => setPasswordValue(e.target.value)}
                 margin="normal"
                 placeholder="Password"
+                type="password"
+                fullWidth
+              />
+              <TextField
+                id="passwordConfirm"
+                InputProps={{
+                  classes: {
+                    underline: classes.textFieldUnderline,
+                    input: classes.textField,
+                  },
+                }}
+                onChange={(e) => setConfirmPasswordValue(e.target.value)}
+                margin="normal"
+                placeholder="Confirm Password"
                 type="password"
                 fullWidth
               />
@@ -201,16 +339,17 @@ function Login(props) {
                   <CircularProgress size={26} />
                 ) : (
                   <Button
-                    onClick={() =>
-                      loginUser(
+                    onClick={() => {
+                      registerUser(
                         userDispatch,
                         loginValue,
                         passwordValue,
                         props.history,
                         setIsLoading,
                         setError,
-                      )
-                    }
+                      );
+                      handleNotificationCall("success");
+                    }}
                     disabled={
                       loginValue.length === 0 ||
                       passwordValue.length === 0 ||
@@ -226,26 +365,39 @@ function Login(props) {
                   </Button>
                 )}
               </div>
-              <div className={classes.formDividerContainer}>
-                <div className={classes.formDivider} />
-                <Typography className={classes.formDividerWord}>or</Typography>
-                <div className={classes.formDivider} />
-              </div>
-              <Button
-                size="large"
-                className={classnames(
-                  classes.googleButton,
-                  classes.googleButtonCreating,
-                )}
-              >
-                <img src={google} alt="google" className={classes.googleIcon} />
-                &nbsp;Sign in with Google
-              </Button>
+              <ToastContainer
+                className={classes.toastsContainer}
+                closeButton={
+                  <CloseButton className={classes.notificationCloseButton} />
+                }
+                closeOnClick={false}
+                progressClassName={classes.notificationProgress}
+              />
+              {/* <div>
+                <ToastContainer />
+                <button
+                  onClick={
+                    (() => handleNotificationCall("success"),
+                    toast("Toast Message"))
+                  }
+                >
+                  show notification
+                </button>
+              </div> */}
             </React.Fragment>
           )}
         </div>
         <Typography color="primary" className={classes.copyright}>
-        © 2014-{new Date().getFullYear()} <a style={{ textDecoration: 'none', color: 'inherit' }} href="https://flatlogic.com" rel="noopener noreferrer" target="_blank">Flatlogic</a>, LLC. All rights reserved.
+          © 2020-{new Date().getFullYear()}{" "}
+          <a
+            style={{ textDecoration: "none", color: "inherit" }}
+            href="http://www.arpaglobal.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Arpa Enterprises
+          </a>
+          , LLC. All rights reserved.
         </Typography>
       </div>
     </Grid>
