@@ -137,7 +137,7 @@ function Login(props) {
 
     var toastId = sendNotification(componentProps, {
       type: notificationType,
-      position: toast.POSITION.BOTTOM_RIGHT,
+      position: toast.POSITION.TOP_RIGHT,
       progressClassName: classes.progress,
       onClose: notificationType === "error" && (() => setErrorToastId(null)),
       className: classes.notification,
