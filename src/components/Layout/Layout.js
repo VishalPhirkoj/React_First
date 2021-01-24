@@ -27,6 +27,9 @@ import Tables from "../../pages/tables";
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
 import Forms from "../../pages/forms/Forms";
+import CCF from "../../pages/CCF/CCF";
+import Manager from "../../pages/Manager/Manager";
+import Engineer from "../../pages/Engineer/Engineer";
 
 // context
 import { useLayoutState } from "../../context/LayoutContext";
@@ -63,6 +66,9 @@ function Layout(props) {
             <Route path="/app/ui/charts" component={Charts} />
 
             <Route path="/app/forms" component={Forms} />
+            <Route path="/app/ccf" component={CCF} />
+            <Route path="/app/manager" component={Manager} />
+            <Route path="/app/engineer" component={Engineer} />
           </Switch>
           <Box
             mt={5}

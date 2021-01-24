@@ -373,17 +373,6 @@ function Login(props) {
                 closeOnClick={false}
                 progressClassName={classes.notificationProgress}
               />
-              {/* <div>
-                <ToastContainer />
-                <button
-                  onClick={
-                    (() => handleNotificationCall("success"),
-                    toast("Toast Message"))
-                  }
-                >
-                  show notification
-                </button>
-              </div> */}
             </React.Fragment>
           )}
         </div>

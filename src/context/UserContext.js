@@ -9,6 +9,8 @@ function userReducer(state, action) {
       return { ...state, isAuthenticated: true };
     case "SIGN_OUT_SUCCESS":
       return { ...state, isAuthenticated: false };
+    case "REGISTER_SUCCESS":
+      return { ...state, isAuthenticated: false };
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -45,7 +47,14 @@ function useUserDispatch() {
   return context;
 }
 
-export { UserProvider, useUserState, useUserDispatch, loginUser, signOut };
+export {
+  UserProvider,
+  useUserState,
+  useUserDispatch,
+  loginUser,
+  registerUser,
+  signOut,
+};
 
 // ###########################################################
 
@@ -55,13 +64,40 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
 
   if (!!login && !!password) {
     setTimeout(() => {
-      localStorage.setItem('id_token', 1)
-      setError(null)
-      setIsLoading(false)
-      dispatch({ type: 'LOGIN_SUCCESS' })
+      localStorage.setItem("id_token", 1);
+      setError(null);
+      setIsLoading(false);
+      dispatch({ type: "LOGIN_SUCCESS" });
 
-      history.push('/app/dashboard')
+      history.push("/app/dashboard");
     }, 2000);
+  } else {
+    dispatch({ type: "LOGIN_FAILURE" });
+    setError(true);
+    setIsLoading(false);
+  }
+}
+
+function registerUser(
+  dispatch,
+  login,
+  password,
+  history,
+  setIsLoading,
+  setError,
+) {
+  setError(false);
+  setIsLoading(true);
+
+  if (!!login && !!password) {
+    setTimeout(() => {
+      localStorage.setItem("id_token", 1);
+      setError(null);
+      setIsLoading(false);
+      dispatch({ type: "REGISTER_SUCCESS" });
+
+      // history.push("/login");
+    }, 5000);
   } else {
     dispatch({ type: "LOGIN_FAILURE" });
     setError(true);
